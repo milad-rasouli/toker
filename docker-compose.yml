@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+#  app:
+#    build: .
+#    ports:
+#      - "8080:8080"
+#    volumes:
+#      - .:/app
+#    depends_on:
+#      - redis
+  redis:
+    image: docker.arvancloud.ir/redis:8.0-M02-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
