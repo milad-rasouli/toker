@@ -6,5 +6,5 @@ port = ":5001"
 level = "info"
 
 [redis]
-host = "redis://127.0.0.1:6379"
-name = "toker"
+name = "toker_memory"
+host = "127.0.0.1:6380"

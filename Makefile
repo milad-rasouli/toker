@@ -5,3 +5,7 @@ build:
 
 run: build
 	bin/toker
+
+wire:
+	wire ./cmd/boot
+
