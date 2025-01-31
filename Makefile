@@ -9,3 +9,5 @@ run: build
 wire:
 	wire ./cmd/boot
 
+install-deps:
+	go install github.com/google/wire/cmd/wire@latest
