@@ -1,0 +1,10 @@
+[app]
+name = "toker"
+port = ":5001"
+
+[logger]
+level = "info"
+
+[redis]
+name = "toker_memory"
+host = "127.0.0.1:6380"
