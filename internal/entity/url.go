@@ -3,8 +3,8 @@ package entity
 import "encoding/json"
 
 type URL struct {
-	URL    string `json:"url"`
-	Detail string `json:"detail"`
+	URL    string `json:"url" binding:"required,url"`
+	Detail string `json:"detail omitempty"`
 }
 
 func (u *URL) ToJSON() ([]byte, error) {
