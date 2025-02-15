@@ -12,8 +12,7 @@ import (
 var ErrNotFound = errors.New("url not found")
 
 type UrlService interface {
-	CreateUrl(ctx context.Context, url entity.URL) error
-	GetUrl(ctx context.Context, address string) (entity.URL, error)
+	CreateOrGetUrl(ctx context.Context, url string) (*entity.URL, error)
 }
 type urlService struct {
 	logger  *zap.Logger
@@ -28,36 +27,40 @@ func NewUrlService(logger *zap.Logger, env *config.Config, repo urlRepo.Reposito
 		urlRepo: repo,
 	}
 }
-func (u *urlService) CreateUrl(ctx context.Context, url entity.URL) error {
+func (u *urlService) CreateOrGetUrl(ctx context.Context, url string) (*entity.URL, error) {
 	var (
 		err error
 		lg  = u.logger.With(zap.String("method", "UrlService.CreateUrl"))
 	)
 	lg.Info("called with", zap.Any("url", url))
 
-	err = u.urlRepo.SaveUrl(ctx, url)
+	err = u.urlRepo.SaveUrl(ctx, entity.URL{
+		URL:    url,
+		Detail: "TODO",
+	})
 	if err != nil {
 		lg.Error("failed to save url", zap.Error(err))
-		return err
+		return nil, err
 	}
-	return nil
+	return nil, nil
 }
 
-func (u *urlService) GetUrl(ctx context.Context, address string) (entity.URL, error) {
-	var (
-		err error
-		lg  = u.logger.With(zap.String("method", "UrlService.GetUrl"))
-		url entity.URL
-	)
-	lg.Info("called with", zap.Any("url", address))
-	url, err = u.urlRepo.GetUrl(ctx, address)
-	if err != nil {
-		if errors.Is(err, urlRepo.ErrNotFound) {
-			return entity.URL{}, ErrNotFound
-		}
-		lg.Error("failed to fetch url", zap.Error(err))
-		return entity.URL{}, err
-	}
-
-	return url, nil
-}
+//
+//func (u *urlService) GetUrl(ctx context.Context, address string) (*entity.URL, error) {
+//	var (
+//		err error
+//		lg  = u.logger.With(zap.String("method", "UrlService.GetUrl"))
+//		url entity.URL
+//	)
+//	lg.Info("called with", zap.Any("url", address))
+//	url, err = u.urlRepo.GetUrl(ctx, address)
+//	if err != nil {
+//		if errors.Is(err, urlRepo.ErrNotFound) {
+//			return nil, ErrNotFound
+//		}
+//		lg.Error("failed to fetch url", zap.Error(err))
+//		return nil, err
+//	}
+//
+//	return &url, nil
+//}

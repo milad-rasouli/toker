@@ -1,22 +1,20 @@
 package boot
 
 import (
-	"context"
-	"github.com/milad-rasouli/toker/internal/entity"
-	"github.com/milad-rasouli/toker/internal/service"
+	httpServer "github.com/milad-rasouli/toker/internal/app/http_server"
 	"go.uber.org/zap"
 )
 
 type Boot struct {
-	logger     *zap.Logger
-	urlService service.UrlService
+	logger  *zap.Logger
+	hServer *httpServer.HttpServer
 }
 
-func NewBoot(urlService service.UrlService,
+func NewBoot(h *httpServer.HttpServer,
 	logger *zap.Logger) *Boot {
 	return &Boot{
-		logger:     logger.Named("Boot"),
-		urlService: urlService,
+		logger:  logger.Named("Boot"),
+		hServer: h,
 	}
 }
 func (b *Boot) Boot() error {
@@ -24,19 +22,10 @@ func (b *Boot) Boot() error {
 		err error
 		lg  = b.logger.With(zap.String("method", "Boot"))
 	)
-	url := entity.URL{
-		URL:    "google.com",
-		Detail: "written in C++ and Java mostly.",
-	}
-
-	err = b.urlService.CreateUrl(context.TODO(), url)
+	err = b.hServer.Start()
 	if err != nil {
+		lg.Error("failed to start http server", zap.Error(err))
 		return err
 	}
-	instance, err := b.urlService.GetUrl(context.TODO(), url.URL)
-	if err != nil {
-		return err
-	}
-	lg.Info("Got ", zap.Any("instance", instance))
 	return nil
 }
